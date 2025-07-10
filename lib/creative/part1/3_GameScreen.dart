@@ -214,18 +214,15 @@ class _GameScreenState3 extends State<GameScreen3>
                           child: TimerDisplay(remainingTime: _remainingTime),
                         ),
                       ),
-                      // ★★★ ここからが修正箇所 ★★★
-                      // PositionedウィジェットをStackのchildrenリストの中に入れました
                       Positioned(
                         top: 0,
                         right: 0,
                         child: ScoreDisplay(
-                          questionNumber: 3, // このファイルは第3問
+                          questionNumber: 3,
                           score: CorrectCounter_creative_1.correctCount,
                           totalQuestions: totalQuestions,
                         ),
                       ),
-                      // ★★★ ここまでが修正箇所 ★★★
                     ],
                   ),
                 ),
@@ -279,11 +276,14 @@ class _GameScreenState3 extends State<GameScreen3>
           }
         },
         builder: (context, candidateData, rejectedData) {
-          return TargetImageWidget(
+          // ★★★ ここからが修正箇所 ★★★
+          // TargetImageWidgetの代わりに、テキストを表示するTargetTextWidgetを使用します。
+          return TargetTextWidget(
             isHovered: candidateData.isNotEmpty,
-            imagePath:
-                targetId == 'A' ? 'assets/images/red.png' : 'assets/images/blue.png',
+            // 表示するテキストをここで指定します。
+            text: targetId == 'A' ? '危険を予測して\n行動する' : '急いでいるので\n無視する',
           );
+          // ★★★ ここまでが修正箇所 ★★★
         },
       ),
     );
@@ -291,8 +291,56 @@ class _GameScreenState3 extends State<GameScreen3>
 }
 
 // ===========================================================================
-// 以下、補助ウィジェット群（変更なし）
+// 以下、補助ウィジェット群
 // ===========================================================================
+
+// ★★★ ここからが修正箇所 ★★★
+// TargetImageWidgetを削除し、代わりにTargetTextWidgetを定義します。
+class TargetTextWidget extends StatelessWidget {
+  final bool isHovered;
+  final String text;
+  const TargetTextWidget({super.key, required this.isHovered, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Opacity(
+      opacity: isHovered ? 1.0 : 0.8,
+      child: Container(
+        width: _GameScreenState3.targetSize,
+        height: _GameScreenState3.targetSize,
+        decoration: BoxDecoration(
+          color: Colors.blueGrey.shade700,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: isHovered
+              ? [
+                  const BoxShadow(
+                      color: Colors.yellow, blurRadius: 20, spreadRadius: 2)
+                ]
+              : [
+                const BoxShadow(
+                      color: Colors.black38, blurRadius: 5, offset: Offset(2, 2))
+              ],
+           border: Border.all(color: isHovered ? Colors.yellow : Colors.white60, width: 2),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+// ★★★ ここまでが修正箇所 ★★★
 
 class AvatarWidget extends StatelessWidget {
   final double size;
@@ -323,47 +371,6 @@ class AvatarWidget extends StatelessWidget {
           shadows: const [
             Shadow(color: Colors.black26, blurRadius: 4, offset: Offset(2, 2))
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class TargetImageWidget extends StatelessWidget {
-  final bool isHovered;
-  final String imagePath;
-  const TargetImageWidget(
-      {super.key, required this.isHovered, required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Opacity(
-      opacity: isHovered ? 1.0 : 0.8,
-      child: Container(
-        width: _GameScreenState3.targetSize,
-        height: _GameScreenState3.targetSize,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: isHovered
-              ? [
-                  const BoxShadow(
-                      color: Colors.yellow, blurRadius: 20, spreadRadius: 2)
-                ]
-              : [],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                color: Colors.grey,
-                child: const Center(
-                    child: Text('画像', style: TextStyle(color: Colors.white))),
-              );
-            },
-          ),
         ),
       ),
     );
