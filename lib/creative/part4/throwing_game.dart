@@ -7,7 +7,8 @@ import 'ground.dart';
 
 class ThrowingGame extends Forge2DGame with PanDetector {
   late Target target;
-
+@override
+  Color backgroundColor() => const Color(0xFF333333); // 暗い灰色
   ThrowingGame() : super(gravity: Vector2(0, 15.0)); // 下向きの重力を設定
 
   @override

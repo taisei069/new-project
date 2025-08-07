@@ -79,6 +79,13 @@ class Diffculty_quake extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 32),
+                     _buildVibrantButton(
+                      icon: Icons.sports_baseball, // 例として野球ボールのアイコン
+                      label: '投擲ゲーム', // ラベル（後で多言語対応も可能）
+                      colors: const [Color(0xFFFFA726), Color(0xFFFF7043)], // オレンジ系の色
+                      onPressed: () => context.go(RoutePaths.throwing_game), // app_routerで設定したパス
+                      maxWidth: screenWidth,
+                    ),
 
                     _buildVibrantButton(
                       icon: Icons.arrow_back,

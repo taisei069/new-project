@@ -132,6 +132,6 @@ class RoutePaths {
   static const creative_35_1 = '/creative_35_1';
 
   static const First = '/First';
-
+  static const throwing_game = '/throwing_game';
   static const reference = "/reference";
 }
