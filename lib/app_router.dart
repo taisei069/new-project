@@ -126,6 +126,11 @@ import 'package:safety_go/creative/part3/34_ResultScreen.dart';
 import 'package:safety_go/creative/part3/35_GameScreen.dart';
 import 'package:safety_go/creative/part3/35_ResultScreen.dart';
 
+import 'package:safety_go/creative/part4/ball.dart';
+import 'package:safety_go/creative/part4/ground.dart';
+import 'package:safety_go/creative/part4/target.dart';
+import 'package:safety_go/creative/part4/throwing_game.dart';
+import 'package:safety_go/creative/part4/game_page.dart';
 
 import 'package:safety_go/creative/part1/first.dart';
 
@@ -325,8 +330,7 @@ GoRouter appRouter({
   GoRoute(path: '/First', builder: (context, state) => First()),
 
 
-  GoRoute(path: '/reference', builder: (context, state) => CitationPage()),
-    
+  GoRoute(path: '/throwing_game', builder: (context, state) => const GamePage()),
   
     
     ]
