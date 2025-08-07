@@ -119,8 +119,8 @@ class QuestionData {
       'id': 1,
     },
     {
-      'imagePath_1': 'assets/images/question3.png',
-      'imagePath_2': 'assets/images/question1.png',
+      'imagePath_1': 'assets/images/creative/漢字津波.png',
+      'imagePath_2': 'assets/images/creative/漢字地震.png',
       'correctAnswer': 'B',
       'id': 2,
     },
