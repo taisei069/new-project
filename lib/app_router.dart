@@ -244,8 +244,12 @@ GoRouter appRouter({
     GoRoute(path: '/creative_quake', builder: (context, state) => Creative_quake()),
     GoRoute(path: '/creative_1', builder: (context, state) => GameScreen1()),
     GoRoute(path: '/creative_1_1',builder: (context, state) {
-    final isCorrect = state.extra as bool? ?? false;
-    return ResultScreen1(isCorrect: isCorrect);},),
+    final extra = state.extra as Map<String, dynamic>? ?? {};
+    final isCorrect = extra['isCorrect'] as bool? ?? false;
+    final id = extra['id'] as int? ?? -1; // idがnullだったときは -1 を仮で使う
+    return ResultScreen1(isCorrect: isCorrect, id: id);
+  },
+),
     GoRoute(path: '/creative_2', builder: (context, state) => GameScreen2()),
     GoRoute(path: '/creative_2_1',builder: (context, state) {
     final isCorrect = state.extra as bool? ?? false;

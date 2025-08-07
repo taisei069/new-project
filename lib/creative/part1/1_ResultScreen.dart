@@ -3,13 +3,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:safety_go/correct_counter.dart';
 import 'package:safety_go/l10n/app_localizations.dart';
 
 class ResultScreen1 extends StatefulWidget {
   final bool isCorrect;
+  final int id; // 問題のIDを追加
   const ResultScreen1({
     super.key,
     required this.isCorrect,
+    required this.id, // コンストラクタでIDを受け取る
   });
 
   @override
@@ -44,7 +47,15 @@ class _ResultScreenState1 extends State<ResultScreen1> {
           if (_showExplanation)
             ExplanationPanel(
               // ★ 常に第2問へ移動
-              onNextQuestion: () => context.go('/creative_2'),
+              onNextQuestion: () {
+                if (indexCounter_creative.count != 5) {
+                  context.go('/creative_1');
+                } else {
+                  indexCounter_creative.reset();
+                  QuestionData.resetShuffle();//コピペ注意
+                  context.go('/diffculty_quake');
+                }
+              },
             ),
         ],
       ),
@@ -85,12 +96,23 @@ class ResultSymbol1 extends StatelessWidget {
 }
 
 class ExplanationPanel extends StatelessWidget {
+  
   final VoidCallback onNextQuestion;
   const ExplanationPanel({super.key, required this.onNextQuestion});
+  
 
   @override
   Widget build(BuildContext context) {
+    final extra = GoRouterState.of(context).extra as Map<String, dynamic>;
+    final id = extra['id'] as int;
     final t = AppLocalizations.of(context)!;
+    final List<String> explanations = [
+      t.swipeh1_1a,
+      t.swipeh1_2a,
+      t.swipeh1_3a,
+      t.swipeh1_4a,
+      t.swipeh1_5a,
+    ];
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0.0, end: 1.0),
       duration: const Duration(milliseconds: 300),
@@ -123,10 +145,14 @@ class ExplanationPanel extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               Text(
+                explanations[id],
+                style: TextStyle(fontSize: 16, height: 1.5),
+              ),
+              /*Text(
                 t.swipeh1_1a,
 
                 style: TextStyle(fontSize: 16, height: 1.5),
-              ),
+              ),*/
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: onNextQuestion,
