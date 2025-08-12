@@ -9,6 +9,8 @@ import 'package:safety_go/screens/quake/easy_quake/st_problem_easy_quake/quiz.da
 import 'package:safety_go/creative/score_display.dart'; //ここにかいてる
 import 'package:safety_go/correct_counter.dart';
 import 'package:safety_go/l10n/app_localizations.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class GameScreen31 extends StatefulWidget {
   const GameScreen31({super.key});
@@ -36,13 +38,20 @@ class _GameScreenState31 extends State<GameScreen31>
   static const double targetSize = 100.0;
   static const int gameTotalTime = 8;
   static const int animationDurationSeconds = 8;
-  final String _correctAnswerId = 'A';
+  //final String _correctAnswerId = 'A';
   static const int totalQuestions = 5;
+  var questions = QuestionData_3.all;//コピペ注意
 
   @override
   void initState() {
     super.initState();
-    CorrectCounter_creative_1.reset();
+    questions;
+    if (indexCounter_creative.count == 0) {
+      CorrectCounter_creative_3.reset();
+    }
+    /*if (indexCounter_creative.indexCount == 4) {
+      indexCounter_creative.reset();
+    }*/
     _controller = AnimationController(
       duration: const Duration(seconds: animationDurationSeconds),
       vsync: this,
@@ -62,6 +71,7 @@ class _GameScreenState31 extends State<GameScreen31>
   void _startGame() {
     _gameTimer?.cancel();
     setState(() {
+      questions;
       _remainingTime = gameTotalTime;
       _isTimeUp = false;
       _isNavigating = false;
@@ -127,15 +137,44 @@ class _GameScreenState31 extends State<GameScreen31>
     setState(() {
       _isNavigating = true;
     });
+    indexCounter_creative.increment();
     if (isCorrect) {
       CorrectCounter_creative_3.increment();
     }
+    if (indexCounter_creative.count == totalQuestions) {
+      _onQuizFinished();
+    }
     Future.delayed(const Duration(milliseconds: 50), () {
       if (mounted) {
-        context.go('/creative_31_1', extra: isCorrect);
+        context.go('/creative_31_1', extra: {'isCorrect': isCorrect, 'id': questions[indexCounter_creative.indexCount-1]['id']});
       }
     });
   }
+  Future<void> _onQuizFinished() async {
+    if (CorrectCounter_creative_3.correctCount == 5) {
+      await _savePart1Flag();
+    }
+  }
+Future<void> _savePart1Flag() async {
+  try { // ▼▼▼ tryを追加 ▼▼▼
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final docRef = FirebaseFirestore.instance.collection('game_progress').doc(uid);
+
+    await FirebaseFirestore.instance.runTransaction((tx) async {
+      final snapshot = await tx.get(docRef);
+      // 'part_1' や 'part_2' のように、保存するフラグ名が正しいか確認してください
+      final current = (snapshot.data()?['part_3'] ?? 0) as int; // ← 保存するフラグ名を確認
+      if (current >= 3) return;
+      tx.set(docRef, {'part_3': 3}, SetOptions(merge: true)); // ← 保存するフラグ名を確認
+    });
+
+    print('達成フラグの保存に成功しました！'); // 成功した場合はログを表示
+
+  } catch (e) { // ▼▼▼ catchを追加 ▼▼▼
+    // もしエラーが発生したら、アプリを止めずに内容をコンソールに表示する
+    print('エラー発生：フラグの保存に失敗しました。詳細: $e');
+  }
+}
 
   @override
 Widget build(BuildContext context) {
@@ -194,7 +233,7 @@ Widget build(BuildContext context) {
                       targetId: 'B',
                       top: roadTopY - (targetSize * 0.7),
                       left: (screenSize.width / 2) +
-                          (roadTopWidth / 2),
+                          (roadTopWidth / 2) ,
                     ),
                     if (!_isTimeUp)
                       AnimatedBuilder(
@@ -269,7 +308,7 @@ Widget build(BuildContext context) {
                             ),
                             // ScoreDisplayを配置
                             ScoreDisplay(
-                              questionNumber: 1,
+                              questionNumber: indexCounter_creative.count+1,
                               score: CorrectCounter_creative_3.correctCount,
                               totalQuestions: totalQuestions,
                             ),
@@ -359,16 +398,16 @@ Widget build(BuildContext context) {
       child: DragTarget<String>(
         onAccept: (data) {
           if (!_isTimeUp) {
-            final isCorrect = (targetId == _correctAnswerId);
+            final isCorrect = (targetId == questions[indexCounter_creative.indexCount]['correctAnswer']);
             _navigateToResultScreen(isCorrect);
           }
         },
         builder: (context, candidateData, rejectedData) {
           return TargetImageWidget(
             isHovered: candidateData.isNotEmpty,
-            imagePath: targetId == 'B'
-                ? 'assets/images/swip_pr3/原付.png'
-                : 'assets/images/swip_pr3/土石流_クイズ.png',
+            imagePath: targetId == questions[indexCounter_creative.indexCount]['correctAnswer']
+                ? questions[indexCounter_creative.indexCount]['imagePath_1']
+                : questions[indexCounter_creative.indexCount]['imagePath_2'],
           );
         },
       ),
@@ -672,7 +711,15 @@ class ProblemStatement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var questions = QuestionData_3.all;//コピペ注意
     final t = AppLocalizations.of(context)!;
+    final List<String> questionTexts = [//コピペ注意
+      t.swipeh3_1q,
+      t.swipeh3_2q,
+      t.swipeh3_3q,
+      t.swipeh3_4q,
+      t.swipeh3_5q,
+    ];
     // ★★★ ここからが修正箇所 ★★★
     return Container(
       margin: const EdgeInsets.only(top: 20.0),
@@ -683,7 +730,7 @@ class ProblemStatement extends StatelessWidget {
       ),
       // AnimatedSwitcherを削除し、シンプルなTextウィジェットに変更
       child: Text(
-        t.swipeh3_1q,
+        questionTexts[questions[indexCounter_creative.indexCount]['id']],//t.swipeh1_1q,
         style: const TextStyle( // フォントサイズを20.0に固定
           color: Colors.white,
           fontSize: 20.0,

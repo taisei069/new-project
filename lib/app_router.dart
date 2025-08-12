@@ -275,8 +275,12 @@ GoRouter appRouter({
     // ★★★ 修正箇所: 重複していた '/creative_quake' の定義を削除 ★★★
     GoRoute(path: '/creative_21', builder: (context, state) => GameScreen21()),
     GoRoute(path: '/creative_21_1',builder: (context, state) {
-    final isCorrect = state.extra as bool? ?? false;
-    return ResultScreen21(isCorrect: isCorrect);},),
+    final extra = state.extra as Map<String, dynamic>? ?? {};
+    final isCorrect = extra['isCorrect'] as bool? ?? false;
+    final id = extra['id'] as int? ?? -1; // idがnullだったときは -1 を仮で使う
+    return ResultScreen21(isCorrect: isCorrect, id: id);
+  },
+),
     GoRoute(path: '/creative_22', builder: (context, state) => GameScreen22()),
     GoRoute(path: '/creative_22_1',builder: (context, state) {
     final isCorrect = state.extra as bool? ?? false;
@@ -301,8 +305,12 @@ GoRouter appRouter({
     // ★★★ 修正箇所: 重複していた '/creative_quake' の定義を削除 ★★★
     GoRoute(path: '/creative_31', builder: (context, state) => GameScreen31()),
     GoRoute(path: '/creative_31_1',builder: (context, state) {
-    final isCorrect = state.extra as bool? ?? false;
-    return ResultScreen31(isCorrect: isCorrect);},),
+    final extra = state.extra as Map<String, dynamic>? ?? {};
+    final isCorrect = extra['isCorrect'] as bool? ?? false;
+    final id = extra['id'] as int? ?? -1; // idがnullだったときは -1 を仮で使う
+    return ResultScreen31(isCorrect: isCorrect, id: id);
+  },
+),
     GoRoute(path: '/creative_32', builder: (context, state) => GameScreen32()),
     GoRoute(path: '/creative_32_1',builder: (context, state) {
     final isCorrect = state.extra as bool? ?? false;
