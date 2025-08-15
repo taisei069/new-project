@@ -313,6 +313,31 @@ class _St_problem_normal_quake15State extends State<St_problem_normal_quake15> {
 Future<void> _onQuizFinished({
   required BuildContext context,
 }) async {
+
+
+
+final uid = FirebaseAuth.instance.currentUser!.uid;
+  final docRef = FirebaseFirestore.instance.collection('points').doc(uid);
+
+  final int earnedPoints = (CorrectCounter_nomal_3.correctCount * 2) + 10;
+
+  try {
+    // FieldValue.increment を使って簡潔に加算
+    await docRef.set({
+      'points': FieldValue.increment(earnedPoints)
+    }, SetOptions(merge: true));
+  } catch (e, stack) {
+    debugPrint('ポイント加算失敗: $e');
+    debugPrint('$stack');
+  }
+
+
+
+
+
+
+
+
   if (CorrectCounter_nomal_3.count == 5) {
     // ✅ 全問正解
     await _savePart1Flag();// Firestore へ書き込み
