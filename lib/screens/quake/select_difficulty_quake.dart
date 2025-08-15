@@ -3,6 +3,8 @@ import 'package:safety_go/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:safety_go/constants/route_paths.dart';
 import 'package:safety_go/screens/login/login/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Diffculty_quake extends StatelessWidget {
   const Diffculty_quake({super.key});
@@ -11,6 +13,7 @@ class Diffculty_quake extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
+    final uid = FirebaseAuth.instance.currentUser?.uid;
 
     return Scaffold(
       body: Container(
@@ -31,6 +34,42 @@ class Diffculty_quake extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    /// 🔥 リアルタイムポイント表示
+                    if (uid != null)
+                      StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('points')
+                            .doc(uid)
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Text('読み込み中...', style: TextStyle(color: Colors.white));
+                          }
+
+                          final data = snapshot.data?.data() as Map<String, dynamic>?;
+
+                          final points = data?['points'] ?? 0;
+
+                          return Text(
+                            '現在のポイント: $points pt',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black45,
+                                  blurRadius: 5,
+                                  offset: Offset(1, 1),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+
+                    const SizedBox(height: 20),
+
                     Text(
                       t.genreTitle,
                       style: const TextStyle(
@@ -57,7 +96,6 @@ class Diffculty_quake extends StatelessWidget {
                       onPressed: () => context.go(RoutePaths.easy_quake),
                       maxWidth: screenWidth,
                     ),
-
                     const SizedBox(height: 32),
 
                     _buildVibrantButton(
@@ -67,7 +105,6 @@ class Diffculty_quake extends StatelessWidget {
                       onPressed: () => context.go(RoutePaths.normal_quake),
                       maxWidth: screenWidth,
                     ),
-
                     const SizedBox(height: 32),
 
                     _buildVibrantButton(
@@ -77,7 +114,6 @@ class Diffculty_quake extends StatelessWidget {
                       onPressed: () => context.go(RoutePaths.creative_quake),
                       maxWidth: screenWidth,
                     ),
-
                     const SizedBox(height: 32),
 
                     _buildVibrantButton(
@@ -90,14 +126,16 @@ class Diffculty_quake extends StatelessWidget {
                       },
                       maxWidth: screenWidth,
                     ),
-
                     const SizedBox(height: 70),
+
                     _buildVibrantButton(
                       icon: Icons.menu_book,
                       label: t.inyou,
-                      colors: const [Color.fromARGB(255, 202, 205, 117), Color.fromARGB(255, 194, 190, 87)],
+                      colors: const [
+                        Color.fromARGB(255, 202, 205, 117),
+                        Color.fromARGB(255, 194, 190, 87)
+                      ],
                       onPressed: () {
-                        AuthService().signOut();
                         context.go(RoutePaths.reference);
                       },
                       maxWidth: screenWidth,
@@ -119,8 +157,7 @@ class Diffculty_quake extends StatelessWidget {
     required VoidCallback onPressed,
     required double maxWidth,
   }) {
-    // num を double にキャストしてエラー回避
-    final double buttonWidth = maxWidth.clamp(200.0, 400.0) as double;
+    final double buttonWidth = maxWidth.clamp(200.0, 400.0).toDouble();
 
     return InkWell(
       onTap: onPressed,
