@@ -35,7 +35,7 @@ class _GameScreenState1 extends State<GameScreen1>
 
   static const double avatarMaxSize = 200.0;
   static const double avatarMinSize = 80.0;
-  static const double targetSize = 100.0;
+  static const double targetSize = 125.0;
   static const int gameTotalTime = 8;
   static const int animationDurationSeconds = 8;
   //final String _correctAnswerId = 'A';

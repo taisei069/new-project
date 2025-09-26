@@ -126,8 +126,8 @@ class QuestionData {
       'id': 2,
     },
     {
-      'imagePath_1': 'assets/images/creative/tu1.jpeg',
-      'imagePath_2': 'assets/images/creative/tu2.jpeg',
+      'imagePath_1': 'assets/images/creative/image101.jpg',
+      'imagePath_2': 'assets/images/creative/image102.jpg',
       'correctAnswer': 'A',
       'id': 3,
     },
