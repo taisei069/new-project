@@ -292,7 +292,7 @@ class _St_problem_normal_quake14State extends State<St_problem_normal_quake14> {
                 if (_audioPlayer.processingState == ProcessingState.completed) {
                   _audioPlayer.seek(Duration.zero);
                 }
-                _audioPlayer.play();
+                //_audioPlayer.play();
               }
             },
           ),

@@ -128,12 +128,12 @@ class _St_problem_normal_quake13State extends State<St_problem_normal_quake13> {
                 style: TextStyle(fontSize: 18, color: Colors.white)),
                 SizedBox(height: 24),
 
-                Text(t.nomal13_2,
-                style: TextStyle(fontSize: 18,color: Colors.white),),
-                ElevatedButton(
+                /*Text(t.nomal13_2,
+                style: TextStyle(fontSize: 18,color: Colors.white),),*/
+                /*ElevatedButton(
                  onPressed: () => _audioPlayer.play(),
                 child: Icon(Icons.play_arrow),
-                ),
+                ),*/
                 //ここまで================================
                 Center(
                   child: ElevatedButton(
@@ -299,7 +299,7 @@ class _St_problem_normal_quake13State extends State<St_problem_normal_quake13> {
                 if (_audioPlayer.processingState == ProcessingState.completed) {
                   _audioPlayer.seek(Duration.zero);
                 }
-                _audioPlayer.play();
+                //_audioPlayer.play();
               }
             },
           ),
