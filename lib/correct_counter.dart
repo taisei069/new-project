@@ -99,6 +99,7 @@ class indexCounter_creative {
 
   static int get count => indexCount;
 
+
   static void reset() {
     indexCount = 0;
   }
@@ -125,8 +126,8 @@ class QuestionData {
       'id': 2,
     },
     {
-      'imagePath_1': 'assets/images/creative/津波想定してから.png',
-      'imagePath_2': 'assets/images/creative/津波見てから.png',
+      'imagePath_1': 'assets/images/creative/tu1.jpeg',
+      'imagePath_2': 'assets/images/creative/tu2.jpeg',
       'correctAnswer': 'A',
       'id': 3,
     },
