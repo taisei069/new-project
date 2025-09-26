@@ -459,13 +459,13 @@ class _St_problem_normal_quake1State extends State<St_problem_normal_quake1> {
             color: Color(0xFF00BFFF),
             splashColor: Color(0xFF00BFFF).withOpacity(0.5),
             onPressed: () {
-              if (playing) {
+             if (playing) {
                 _audioPlayer.pause();
               } else {
                 if (_audioPlayer.processingState == ProcessingState.completed) {
                   _audioPlayer.seek(Duration.zero);
                 }
-                _audioPlayer.play();
+                //_audioPlayer.play();
               }
             },
           ),
